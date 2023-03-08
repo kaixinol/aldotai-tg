@@ -1,0 +1,6 @@
+admin: ""
+telegramToken: ""
+proxy: "socks5://127.0.0.1:7891"
+plugin:
+ ChatGPT:
+    key: ""

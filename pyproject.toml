@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "aldotai-tg"
+version = "0.1.0"
+description = ""
+authors = ["kaixinol <keiplyer@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "aldotai_tg"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+openai = "^0.27.0"
+aiogram = "^2.25.1"
+loguru = "^0.6.0"
+pyyaml = "^6.0"
+aiohttp-socks = "^0.8.0"
+pysocks = "^1.7.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
