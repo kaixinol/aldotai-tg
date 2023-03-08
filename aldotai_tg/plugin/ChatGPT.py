@@ -38,6 +38,6 @@ async def safe_chat(**kwargs) -> str:
     if reply["error"]:
         logger.warning(f'{kwargs["usr_id"]}:  {reply["msg"]}')
         await sleep(60 * randint(3, 10))
-        return await direct_chat(**kwargs)["msg"]
+        return (await direct_chat(**kwargs))["msg"]
     logger.info(reply["msg"])
     return reply["msg"]
