@@ -1,6 +1,6 @@
-admin: "lingsepu"
-telegramToken: "5713832205:AAF_A4CD2JYuAfCFKsu-DZPAMDWiBvso7h0"
+admin: ""
+telegramToken: ""
 proxy: "socks5://127.0.0.1:7891"
 plugin:
  ChatGPT:
-    key: "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"
+    key: ""
