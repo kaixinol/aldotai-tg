@@ -1,6 +1,9 @@
 from aiogram import Bot, Dispatcher, executor, types
-from plugin.ChatGPT import safe_chat, data_set
+from loguru import logger
+
+from plugin.ChatGPT import chat, data_set
 from setting import config
+from asyncio import sleep
 
 bot = Bot(token=config['telegramToken'], proxy=config['proxy'])
 dp = Dispatcher(bot)
@@ -32,8 +35,17 @@ async def send_welcome(message: types.Message):
 @dp.message_handler()
 async def say(message: types.Message):
     if message.chat.type == 'private' and message.text[0] != "/":
-        await message.reply(
-            await safe_chat(msg=message.text, usr_id=f'{message.from_user.username}+{message.from_user.id}'))
+        usr_id = f'{message.from_user.username}+{message.from_user.id}'
+        reply = await chat(msg=message.text, usr_id=usr_id)
+        if reply['error']:
+            msg_id = await message.reply(f'阿尔多泰现在不可用。以下是错误信息：\n`{reply["msg"]}`', parse_mode="Markdown")
+            logger.warning(f'阿尔多泰现在不可用。以下是错误信息：\n`{reply["msg"]}`')
+            await sleep(10)
+            await bot.delete_message(message_id=msg_id["message_id"], chat_id=message.chat.id)
+            return
+        await message.reply(reply["msg"])
+        logger.info(reply["msg"])
+        data_set[usr_id].append({"role": "assistant", "content": reply["msg"]})
 
 
 executor.start_polling(dp, skip_updates=True)
