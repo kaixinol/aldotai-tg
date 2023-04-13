@@ -45,11 +45,11 @@ async def chat(msg: str, usr_id: str) -> dict:
     token: int = 0
     if usr_id in data_set:
         for i in data_set[usr_id]:
-            token += round(len(i["content"]) * 2.8)
-        if token > 4096:
+            token += round(len(i["content"]) * 2)
+        if token > 5000:
             return {"msg": "Token数量过多，尝试使用/forgetme", "error": False}
-    if tg_id in usage_limit and usage_limit[tg_id] > 16 and tg_username != config['admin']:
-        return {"msg": "您的每日使用次数已用尽（16次）", "error": False}
+    if tg_id in usage_limit and usage_limit[tg_id] > 32 and tg_username != config['admin']:
+        return {"msg": "您的每日使用次数已用尽（32次）", "error": False}
     logger.info(f"<ID:{usr_id}>: {msg}")
     try:
         if usr_id not in data_set:

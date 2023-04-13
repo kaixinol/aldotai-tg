@@ -4,6 +4,7 @@ from loguru import logger
 from plugin.ChatGPT import chat, data_set
 from setting import config
 from asyncio import sleep
+from json import loads
 
 bot = Bot(token=config['telegramToken'], proxy=config['proxy'])
 dp = Dispatcher(bot)
@@ -26,17 +27,26 @@ https://github.com/kaixinol/aldotai-tg
 async def send_welcome(message: types.Message):
     if message.chat.type == 'private':
         if f'{message.from_user.username}+{message.from_user.id}' in data_set:
-            del data_set[f'{message.from_user.username}+{message.from_user.id}']
+            data_set[f'{message.from_user.username}+{message.from_user.id}'] = []
             await message.reply("阿尔多泰已经忘了之前发生的事啦")
             return
         await message.reply("阿尔多泰不记得有发生什么对话")
+
+
+@dp.message_handler(commands=["debug"])
+async def send_welcome(message: types.Message):
+    if message.chat.type == 'private' and message.from_user.username == config["admin"]:
+        try:
+            await message.reply(eval(loads(message.as_json())['text'][6:]))
+        except Exception as e:
+            await message.reply(str(e))
 
 
 @dp.message_handler()
 async def say(message: types.Message):
     if message.chat.type == 'private' and message.text[0] != "/":
         usr_id = f'{message.from_user.username}+{message.from_user.id}'
-        reply = await chat(msg=message.text, usr_id=usr_id)
+        reply = await chat(msg=loads(message.as_json())['text'], usr_id=usr_id)
         if reply['error']:
             msg_id = await message.reply(f'阿尔多泰现在不可用。以下是错误信息：\n`{reply["msg"]}`', parse_mode="Markdown")
             logger.warning(f'阿尔多泰现在不可用。以下是错误信息：\n`{reply["msg"]}`')
