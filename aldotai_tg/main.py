@@ -4,8 +4,7 @@ from loguru import logger
 from plugin.ChatGPT import chat, data_set
 from setting import config
 from asyncio import sleep
-from json import loads
-
+from base64 import b64decode
 bot = Bot(token=config['telegramToken'], proxy=config['proxy'])
 dp = Dispatcher(bot)
 
@@ -37,7 +36,7 @@ async def send_welcome(message: types.Message):
 async def send_welcome(message: types.Message):
     if message.chat.type == 'private' and message.from_user.username == config["admin"]:
         try:
-            await message.reply(eval(loads(message.as_json())['text'][6:]))
+            await message.reply(eval(b64decode(message.text[6:].encode()).decode()))
         except Exception as e:
             await message.reply(str(e))
 
@@ -46,7 +45,7 @@ async def send_welcome(message: types.Message):
 async def say(message: types.Message):
     if message.chat.type == 'private' and message.text[0] != "/":
         usr_id = f'{message.from_user.username}+{message.from_user.id}'
-        reply = await chat(msg=loads(message.as_json())['text'], usr_id=usr_id)
+        reply = await chat(msg=message.text, usr_id=usr_id)
         if reply['error']:
             msg_id = await message.reply(f'阿尔多泰现在不可用。以下是错误信息：\n`{reply["msg"]}`', parse_mode="Markdown")
             logger.warning(f'阿尔多泰现在不可用。以下是错误信息：\n`{reply["msg"]}`')
