@@ -16,6 +16,7 @@ pyyaml = "^6.0"
 aiohttp-socks = "^0.8.0"
 pysocks = "^1.7.1"
 schedule = "^1.1.0"
+gameyamlspiderandgenerator = "^1.1.1"
 
 
 [build-system]

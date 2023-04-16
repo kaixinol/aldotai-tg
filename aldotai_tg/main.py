@@ -1,12 +1,21 @@
+from os import getcwd
 from aiogram import Bot, Dispatcher, executor, types
 from loguru import logger
 
 from plugin.ChatGPT import chat, data_set
+from plugin.YamlBuilder import to_yaml, VerifyError
 from setting import config
 from asyncio import sleep
 from base64 import b64decode
+
 bot = Bot(token=config['telegramToken'], proxy=config['proxy'])
 dp = Dispatcher(bot)
+logger.add(
+    getcwd() + "/log/{time:YYYY-MM-DD}.log",
+    rotation="00:00",
+    level="INFO",
+    encoding="utf-8",
+)
 
 
 @dp.message_handler(commands=["start", "help"])
@@ -23,17 +32,17 @@ https://github.com/kaixinol/aldotai-tg
 
 
 @dp.message_handler(commands=["forgetme"])
-async def send_welcome(message: types.Message):
+async def forgetme(message: types.Message):
     if message.chat.type == 'private':
         if f'{message.from_user.username}+{message.from_user.id}' in data_set:
-            data_set[f'{message.from_user.username}+{message.from_user.id}'] = []
+            del data_set[f'{message.from_user.username}+{message.from_user.id}']
             await message.reply("阿尔多泰已经忘了之前发生的事啦")
             return
         await message.reply("阿尔多泰不记得有发生什么对话")
 
 
 @dp.message_handler(commands=["debug"])
-async def send_welcome(message: types.Message):
+async def debug(message: types.Message):
     if message.chat.type == 'private' and message.from_user.username == config["admin"]:
         try:
             await message.reply(eval(b64decode(message.text[6:].encode()).decode()))
@@ -41,8 +50,19 @@ async def send_welcome(message: types.Message):
             await message.reply(str(e))
 
 
+@dp.message_handler(commands=["yaml"])
+async def yaml(message: types.Message):
+    if message.chat.type == 'private':
+        try:
+            logger.info(f'<{message.from_user.username}>:{message.text[6:]}')
+            await message.reply_document(**await to_yaml(message.from_user.id, message.text[6:]))
+        except Exception as e:
+            logger.error(str(e))
+            await message.reply(f'发生了错误，已记录此错误信息：`{str(e)}`', parse_mode="Markdown")
+
+
 @dp.message_handler()
-async def say(message: types.Message):
+async def gpt(message: types.Message):
     if message.chat.type == 'private' and message.text[0] != "/":
         usr_id = f'{message.from_user.username}+{message.from_user.id}'
         reply = await chat(msg=message.text, usr_id=usr_id)

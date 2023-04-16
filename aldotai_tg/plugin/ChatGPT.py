@@ -5,7 +5,7 @@ from random import choice
 import openai
 import schedule
 from loguru import logger
-from setting import config
+from aldotai_tg.setting import config
 
 
 def get_current_time():
