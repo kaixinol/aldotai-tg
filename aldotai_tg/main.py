@@ -3,12 +3,12 @@ from aiogram import Bot, Dispatcher, executor, types
 from loguru import logger
 
 from plugin.ChatGPT import chat, data_set
-from plugin.YamlBuilder import to_yaml, VerifyError
-from setting import config
+from plugin.YamlBuilder import to_yaml
+import setting
 from asyncio import sleep
 from base64 import b64decode
 
-bot = Bot(token=config['telegramToken'], proxy=config['proxy'])
+bot = Bot(token=setting.config['telegramToken'], proxy=setting.config['proxy'])
 dp = Dispatcher(bot)
 logger.add(
     getcwd() + "/log/{time:YYYY-MM-DD}.log",
@@ -43,7 +43,7 @@ async def forgetme(message: types.Message):
 
 @dp.message_handler(commands=["debug"])
 async def debug(message: types.Message):
-    if message.chat.type == 'private' and message.from_user.username == config["admin"]:
+    if message.chat.type == 'private' and message.from_user.username == setting["admin"]:
         try:
             await message.reply(eval(b64decode(message.text[6:].encode()).decode()))
         except Exception as e:
