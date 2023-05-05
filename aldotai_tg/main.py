@@ -13,7 +13,7 @@ dp = Dispatcher(bot)
 logger.add(
     getcwd() + "/log/{time:YYYY-MM-DD}.log",
     rotation="00:00",
-    level="INFO",
+    level="ERROR",
     encoding="utf-8",
 )
 
