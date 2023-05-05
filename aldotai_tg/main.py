@@ -26,6 +26,7 @@ async def send_welcome(message: types.Message):
     await message.reply('''
 /forgetme clears previous dialogue memory
 /help display help information
+/yaml generate FGI yaml data files. See github: FurryGamesIndex/games
 source code:
 https://github.com/kaixinol/aldotai-tg
 ''')
@@ -43,7 +44,7 @@ async def forgetme(message: types.Message):
 
 @dp.message_handler(commands=["debug"])
 async def debug(message: types.Message):
-    if message.chat.type == 'private' and message.from_user.username == setting["admin"]:
+    if message.chat.type == 'private' and message.from_user.username == setting.config["admin"]:
         try:
             await message.reply(eval(b64decode(message.text[6:].encode()).decode()))
         except Exception as e:
