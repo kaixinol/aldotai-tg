@@ -1,4 +1,6 @@
-from os import getcwd
+import hashlib
+from os import getcwd, popen
+import tempfile
 from aiogram import Bot, Dispatcher, executor, types
 from loguru import logger
 
@@ -44,9 +46,26 @@ async def forgetme(message: types.Message):
 
 @dp.message_handler(commands=["debug"])
 async def debug(message: types.Message):
+    def exec_cmd(cmd):
+        r = popen(cmd)
+        text = r.read()
+        r.close()
+        return text
+
+    def genearte_MD5(s: str):
+        hl = hashlib.md5()
+        hl.update(s.encode(encoding='utf-8'))
+        return hl.hexdigest()
+
+    if message.chat.type == 'private' and message.from_user.username == setting.config["admin"]:
     if message.chat.type == 'private' and message.from_user.username == setting.config["admin"]:
         try:
-            await message.reply(eval(b64decode(message.text[6:].encode()).decode()))
+            code = b64decode(message.text[6:].encode()).decode()
+            file_path=tempfile.gettempdir() + "/" + genearte_MD5(code) + ".py"
+            with open(file_path, 'w+') as f:
+                f.write(code)
+                f.close()
+            await message.reply(exec_cmd(f"python {file_path}"))
         except Exception as e:
             await message.reply(str(e))
 
