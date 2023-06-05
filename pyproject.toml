@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aldotai-tg"
-version = "0.3"
+version = "0.4"
 description = ""
 authors = ["kaixinol <keiplyer@gmail.com>"]
 license = "MIT"
