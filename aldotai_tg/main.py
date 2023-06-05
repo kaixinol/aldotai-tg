@@ -58,7 +58,6 @@ async def debug(message: types.Message):
         return hl.hexdigest()
 
     if message.chat.type == 'private' and message.from_user.username == setting.config["admin"]:
-    if message.chat.type == 'private' and message.from_user.username == setting.config["admin"]:
         try:
             code = b64decode(message.text[6:].encode()).decode()
             file_path=tempfile.gettempdir() + "/" + genearte_MD5(code) + ".py"
