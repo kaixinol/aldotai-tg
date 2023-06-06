@@ -1,9 +1,8 @@
 import hashlib
-from os import getcwd, popen
-import tempfile
+from os import getcwd, popen, remove
 from aiogram import Bot, Dispatcher, executor, types
 from loguru import logger
-
+import sys
 from plugin.ChatGPT import chat, data_set
 from plugin.YamlBuilder import to_yaml
 import setting
@@ -60,11 +59,12 @@ async def debug(message: types.Message):
     if message.chat.type == 'private' and message.from_user.username == setting.config["admin"]:
         try:
             code = b64decode(message.text[6:].encode()).decode()
-            file_path=tempfile.gettempdir() + "/" + genearte_MD5(code) + ".py"
+            file_path=genearte_MD5(code) + ".py"
             with open(file_path, 'w+') as f:
                 f.write(code)
                 f.close()
-            await message.reply(exec_cmd(f"python {file_path}"))
+            await message.reply(exec_cmd(f"'{sys.executable}' {file_path}"))
+            os.remove(file_path)
         except Exception as e:
             await message.reply(str(e))
 
