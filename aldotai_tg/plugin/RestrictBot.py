@@ -22,5 +22,5 @@ def unban(bot_name: str):
     global ban_bot
     if bot_name in ban_bot:
         with open("bot.json", "w") as fp:
-            ban_bot.pop(bot_name)
+            ban_bot.pop(ban_bot.index(bot_name))
             dump(ban_bot, fp)
