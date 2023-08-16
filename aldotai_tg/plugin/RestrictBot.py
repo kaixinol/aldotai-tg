@@ -11,6 +11,7 @@ else:
 
 
 def ban(bot_name: str):
+    global ban_bot
     if bot_name not in ban_bot:
         with open("bot.json", "w") as fp:
             ban_bot.append(bot_name)
@@ -18,6 +19,7 @@ def ban(bot_name: str):
 
 
 def unban(bot_name: str):
+    global ban_bot
     if bot_name in ban_bot:
         with open("bot.json", "w") as fp:
             ban_bot.pop(bot_name)
