@@ -1,5 +1,6 @@
 import hashlib
-from os import getcwd, popen, remove
+from os import getcwd, popen
+import tempfile
 from aiogram import Bot, Dispatcher, executor, types
 from loguru import logger
 import sys
