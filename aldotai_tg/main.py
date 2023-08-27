@@ -131,11 +131,11 @@ async def open_raffle(message: types.Message):
 
     async def get_nickname(user_id):
         user = await bot.get_chat(user_id)
-        return user.full_name
+        return user.first_name
 
     async def get_t_me_link(user_id):
         user = await bot.get_chat(user_id)
-        link = await user.get_url()
+        link = await user.get_current().get_url()
         return link
 
     if "private" in message.chat.type:
