@@ -114,11 +114,11 @@ async def lottery(message: types.Message):
         else:
             return False
     if "private" in message.chat.type:
-        if get_row_count_by_id(message.from_user.id) and await check_user_in_channel(message.from_user.id):
+        if get_row_count_by_id(message.from_user.id) and (await check_user_in_channel(message.from_user.id) or message.from_user.username == config["admin"]):
             current_milli_time = lambda: int(round(time.time() * 1000))
             insert_info(message.from_user.id, message.from_user.username, current_milli_time())
             await message.reply("Successfully participated in the lucky draw!")
-        elif not await check_user_in_channel(message.from_user.id):
+        elif not (await check_user_in_channel(message.from_user.id) or message.from_user.username == config["admin"]):
             await message.reply("You cannot enter the draw because you are not subscribed to @furrystickercn")
         else:
             await message.reply("You have already participated in the lucky draw!")
