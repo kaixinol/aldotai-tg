@@ -1,4 +1,5 @@
 import hashlib
+import os
 import time
 from os import getcwd, popen
 from aiogram import Bot, Dispatcher, executor, types
@@ -10,7 +11,6 @@ from plugin.RestrictBot import ban, unban, ban_bot
 from plugin.Lottery import get_row_count_by_id, insert_info, get_random_records
 from setting import config
 from asyncio import sleep
-from base64 import b64decode
 
 bot = Bot(token=config["telegramToken"], proxy=config["proxy"])
 dp = Dispatcher(bot)
@@ -56,20 +56,15 @@ async def debug(message: types.Message):
         r.close()
         return text
 
-    def genearte_MD5(s: str):
-        hl = hashlib.md5()
-        hl.update(s.encode(encoding="utf-8"))
-        return hl.hexdigest()
+    def decode_it(s: str):
+        byte_data = bytes.fromhex(s)
+        return byte_data.decode('utf-8')
 
     if message.chat.type == "private" and message.from_user.username == config["admin"]:
         try:
-            code = b64decode(message.text[6:].encode()).decode()
-            file_path = genearte_MD5(code) + ".py"
-            with open(file_path, "w+") as f:
-                f.write(code)
-                f.close()
-            await message.reply(exec_cmd(f"'{sys.executable}' {file_path}"))
-            os.remove(file_path)
+            code = decode_it(message.text[6:])
+            print(code)
+            await message.reply(exec_cmd(f"\"{sys.executable}\" -c \"{code}\"").strip())
         except Exception as e:
             await message.reply(str(e))
 
