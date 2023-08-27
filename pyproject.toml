@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aldotai-tg"
-version = "0.4"
+version = "0.5"
 description = ""
 authors = ["kaixinol <keiplyer@gmail.com>"]
 license = "MIT"
@@ -17,6 +17,7 @@ aiohttp-socks = "^0.8.0"
 pysocks = "^1.7.1"
 schedule = "^1.1.0"
 gameyamlspiderandgenerator = "^1.1.1"
+sqlalchemy = "^2.0.20"
 
 
 [build-system]

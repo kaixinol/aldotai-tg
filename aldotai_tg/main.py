@@ -1,15 +1,16 @@
 import hashlib
+import time
 from os import getcwd, popen
-import tempfile
 from aiogram import Bot, Dispatcher, executor, types
 from loguru import logger
 import sys
 from plugin.ChatGPT import chat, data_set
 from plugin.YamlBuilder import to_yaml
+from plugin.RestrictBot import ban, unban, ban_bot
+from plugin.Lottery import get_row_count_by_id, insert_info, get_random_records
 from setting import config
 from asyncio import sleep
 from base64 import b64decode
-from plugin.RestrictBot import ban, unban, ban_bot
 
 bot = Bot(token=config["telegramToken"], proxy=config["proxy"])
 dp = Dispatcher(bot)
@@ -104,12 +105,59 @@ async def yaml(message: types.Message):
         await message.reply("你非管理员")
 
 
+@dp.message_handler(commands=["join_draw"])
+async def lottery(message: types.Message):
+    async def check_user_in_channel(user_id_to_check):
+        chat_member = await bot.get_chat_member('@furrystickercn', user_id_to_check)
+        if chat_member.status == types.ChatMemberStatus.MEMBER or chat_member.status == types.ChatMemberStatus.ADMINISTRATOR:
+            return True
+        else:
+            return False
+    if "private" in message.chat.type:
+        if get_row_count_by_id(message.from_user.id) and await check_user_in_channel(message.from_user.id):
+            current_milli_time = lambda: int(round(time.time() * 1000))
+            insert_info(message.from_user.id, message.from_user.username, current_milli_time())
+            await message.reply("Successfully participated in the lucky draw!")
+        elif not await check_user_in_channel(message.from_user.id):
+            await message.reply("You cannot enter the draw because you are not subscribed to @furrystickercn")
+        else:
+            await message.reply("You have already participated in the lucky draw!")
+
+
+@dp.message_handler(commands=["open"])
+async def open_raffle(message: types.Message):
+    def convert(time_stamp: int):
+        return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(time_stamp / 1000)))
+
+    async def get_nickname(user_id):
+        user = await bot.get_chat(user_id)
+        return user.full_name
+
+    async def get_t_me_link(user_id):
+        user = await bot.get_chat(user_id)
+        link = await user.get_url()
+        return link
+
+    if "private" in message.chat.type:
+        if message.from_user.username == config["admin"]:
+            records = get_random_records(int(message.text[6:]))
+            msg = ""
+            for i in records:
+                nickname = await get_nickname(i.id)
+                username_part = f"([@{i.user_name}](https://t.me/{i.user_name}))" if i.user_name else " "
+                nickname_part = f"[{nickname}]({await get_t_me_link(i.id)})"
+                timestamp_str = convert(i.time)
+                entry = f"{nickname_part}{username_part} `{timestamp_str}`\n"
+                msg += entry
+            await message.reply(msg, parse_mode="markdown")
+
+
 @dp.message_handler()
 async def handel(message: types.Message):
     if (
-        message.chat.type == "private"
-        and message.text[0] != "/"
-        and message.text[0] != "@"
+            message.chat.type == "private"
+            and message.text[0] != "/"
+            and message.text[0] != "@"
     ):
         usr_id = f"{message.from_user.username}+{message.from_user.id}"
         reply = await chat(msg=message.text, usr_id=usr_id)
@@ -127,9 +175,9 @@ async def handel(message: types.Message):
         logger.info(reply["msg"])
         data_set[usr_id].append({"role": "assistant", "content": reply["msg"]})
     elif (
-        "via_bot" in message
-        and message.from_user.username != config["admin"]
-        and message["via_bot"]["username"] in ban_bot
+            "via_bot" in message
+            and message.from_user.username != config["admin"]
+            and message["via_bot"]["username"] in ban_bot
     ):
         await bot.delete_message(
             message_id=message["message_id"], chat_id=message.chat.id
