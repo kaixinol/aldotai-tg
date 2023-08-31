@@ -5,6 +5,7 @@ from random import choice
 import openai
 import schedule
 from loguru import logger
+
 from aldotai_tg.setting import config
 
 

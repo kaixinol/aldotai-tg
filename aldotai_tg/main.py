@@ -1,16 +1,17 @@
-import hashlib
-import os
+import re
+import sys
 import time
+from asyncio import sleep
 from os import getcwd, popen
+
 from aiogram import Bot, Dispatcher, executor, types
 from loguru import logger
-import sys
+
 from plugin.ChatGPT import chat, data_set
-from plugin.YamlBuilder import to_yaml
+from plugin.Lottery import get_row_count_by_id, insert_info, get_random_records, get_count
 from plugin.RestrictBot import ban, unban, ban_bot
-from plugin.Lottery import get_row_count_by_id, insert_info, get_random_records
+from plugin.YamlBuilder import to_yaml
 from setting import config
-from asyncio import sleep
 
 bot = Bot(token=config["telegramToken"], proxy=config["proxy"])
 dp = Dispatcher(bot)
@@ -108,8 +109,10 @@ async def lottery(message: types.Message):
             return True
         else:
             return False
+
     if "private" in message.chat.type:
-        if get_row_count_by_id(message.from_user.id) and (await check_user_in_channel(message.from_user.id) or message.from_user.username == config["admin"]):
+        if get_row_count_by_id(message.from_user.id) and (
+                await check_user_in_channel(message.from_user.id) or message.from_user.username == config["admin"]):
             current_milli_time = lambda: int(round(time.time() * 1000))
             insert_info(message.from_user.id, message.from_user.username, current_milli_time())
             await message.reply("Successfully participated in the lucky draw!")
@@ -135,7 +138,14 @@ async def open_raffle(message: types.Message):
 
     if "private" in message.chat.type:
         if message.from_user.username == config["admin"]:
-            records = get_random_records(int(message.text[6:]))
+            nums = [int(num) for num in re.findall(r'\d+', message.text)]
+            if len(message.text) < 6 or len(nums) != 2:
+                await message.reply("Parameter error")
+                return
+            records = get_random_records(nums[0])
+            if get_count() < nums[1]:
+                await message.reply(f"Number of participants less than {nums[1]}")
+                return
             msg = ""
             for i in records:
                 nickname = await get_nickname(i.id)

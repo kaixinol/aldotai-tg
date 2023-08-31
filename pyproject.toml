@@ -1,11 +1,11 @@
 [tool.poetry]
 name = "aldotai-tg"
-version = "0.5"
+version = "0.5.1"
 description = ""
 authors = ["kaixinol <keiplyer@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "aldotai_tg"}]
+packages = [{ include = "aldotai_tg" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"

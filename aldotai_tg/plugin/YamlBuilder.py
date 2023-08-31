@@ -1,12 +1,12 @@
 import asyncio
 import io
 
+from aiogram.types import InputFile
 from gameyamlspiderandgenerator import produce_yaml, verify
 from gameyamlspiderandgenerator.util.config import config
 from gameyamlspiderandgenerator.util.plugin_manager import pkg
 from gameyamlspiderandgenerator.util.spider import get_bytes
 from setting import config as bot_config
-from aiogram.types import InputFile
 
 sem = asyncio.Semaphore(3)
 config.load(bot_config['plugin']['YamlBuilder'])
@@ -21,5 +21,3 @@ async def to_yaml(id_: int, url: str) -> Exception | dict:
         return {"document": InputFile(io.BytesIO(bytes(temp)), filename=temp.raw_dict['name'] + '.zip'),
                 "thumb": get_bytes(temp.raw_dict["thumbnail"]),
                 "caption": temp.raw_dict["brief-description"]}
-
-

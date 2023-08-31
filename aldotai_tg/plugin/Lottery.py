@@ -19,6 +19,10 @@ def get_row_count_by_id(id_value):
     return row_count == 0
 
 
+def get_count():
+    return session.query(Table).count()
+
+
 def get_random_records(n):
     return session.query(Table).order_by(func.random()).limit(n).all()
 

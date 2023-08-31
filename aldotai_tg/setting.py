@@ -1,5 +1,5 @@
-from yaml import safe_load
 from loguru import logger
+from yaml import safe_load
 
 config = {}
 try:
