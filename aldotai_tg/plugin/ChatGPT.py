@@ -10,7 +10,7 @@ from aldotai_tg.setting import config
 
 
 def get_current_time():
-    locale.setlocale(locale.LC_CTYPE, 'zh_CN.UTF-8')
+    locale.setlocale(locale.LC_CTYPE, 'en_US.UTF-8')
     return time.strftime('%Y年%m月%d日%H时%M分%S秒')
 
 
@@ -28,6 +28,8 @@ INIT_MSG = {"role": "system", "content": f"""
 data_set: dict = {}
 usage_limit: dict = {}
 logger.info(config)
+if config['plugin']['ChatGPT']['base_url']:
+    openai.api_base = config['plugin']['ChatGPT']['base_url']
 openai.api_key = config['plugin']['ChatGPT']['key']
 openai.proxy = {"https": config['proxy']}
 

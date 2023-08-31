@@ -2,18 +2,19 @@ admin: ""
 telegramToken: ""
 proxy: ""
 plugin:
- ChatGPT:
+  ChatGPT:
     key: ""
- YamlBuilder:
-   plugin:
-     - steam
-     - itchio
-   hook:
-     - search
-   proxy:
-     http: socks5://127.0.0.1:7891
-     https: socks5://127.0.0.1:7891
-   gitToken: 'your token'
-   api:
-     google-play: a714b00383f0662a61b2e382d55c685f17015617aa7048972da58a756fb75e90
-     apple: a714b00383f0662a61b2e382d55c685f17015617aa7048972da58a756fb75e90
+    base_url: ""
+  YamlBuilder:
+    plugin:
+      - steam
+      - itchio
+    hook:
+      - search
+    proxy:
+      http: socks5://127.0.0.1:7890
+      https: socks5://127.0.0.1:7890
+    gitToken: 'your token'
+    api:
+      google-play: a714b00383f0662a61b2e382d55c685f17015617aa7048972da58a756fb75e90
+      apple: a714b00383f0662a61b2e382d55c685f17015617aa7048972da58a756fb75e90
