@@ -43,6 +43,7 @@ schedule.every(1).day.do(update_usage_limit)
 
 
 async def chat(msg: str, usr_id: str) -> dict:
+
     tg_id = usr_id[usr_id.find('+') + 1:]
     tg_username = usr_id[:usr_id.find('+')]
     token: int = 0

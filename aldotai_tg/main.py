@@ -165,6 +165,7 @@ async def handel(message: types.Message):
             and message.text[0] != "@"
     ):
         usr_id = f"{message.from_user.username}+{message.from_user.id}"
+        await message.answer_chat_action("typing")
         reply = await chat(msg=message.text, usr_id=usr_id)
         if reply["error"]:
             msg_id = await message.reply(
