@@ -7,7 +7,7 @@ from os import getcwd, popen
 from aiogram import Bot, Dispatcher, executor, types
 from loguru import logger
 
-from plugin.ChatGPT import chat, data_set
+from plugin.ChatGPT import chat, data_set, INIT_MSG
 from plugin.Lottery import get_row_count_by_id, insert_info, get_random_records, get_count
 from plugin.RestrictBot import ban, unban, ban_bot
 from plugin.YamlBuilder import to_yaml
