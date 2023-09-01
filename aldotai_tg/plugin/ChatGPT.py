@@ -57,8 +57,7 @@ async def chat(msg: str, usr_id: str) -> dict:
     logger.info(f"<ID:{usr_id}>: {msg}")
     try:
         if usr_id not in data_set:
-            data_set[usr_id] = []
-            data_set[usr_id].append(INIT_MSG)
+            data_set[usr_id]= [INIT_MSG]
         data_set[usr_id].append({"role": "user", "content": msg})
         response = await openai.ChatCompletion.acreate(model="gpt-3.5-turbo", messages=data_set[usr_id])
         if tg_id not in usage_limit:

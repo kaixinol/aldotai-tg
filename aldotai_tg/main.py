@@ -44,6 +44,7 @@ async def forgetme(message: types.Message):
     if message.chat.type == "private":
         if f"{message.from_user.username}+{message.from_user.id}" in data_set:
             del data_set[f"{message.from_user.username}+{message.from_user.id}"]
+            data_set[f"{message.from_user.username}+{message.from_user.id}"] = [INIT_MSG]
             await message.reply("阿尔多泰已经忘了之前发生的事啦")
             return
         await message.reply("阿尔多泰不记得有发生什么对话")
@@ -84,7 +85,7 @@ async def yaml(message: types.Message):
 
 
 @dp.message_handler(commands=["banbot"])
-async def yaml(message: types.Message):
+async def banbot(message: types.Message):
     if "group" in message.chat.type and message.from_user.username == config["admin"]:
         await message.reply("封禁成功！")
         ban(message.text[8:])
@@ -93,7 +94,7 @@ async def yaml(message: types.Message):
 
 
 @dp.message_handler(commands=["unbanbot"])
-async def yaml(message: types.Message):
+async def unbanbot(message: types.Message):
     if "group" in message.chat.type and message.from_user.username == config["admin"]:
         await message.reply("解禁成功！")
         unban(message.text[10:])
@@ -102,7 +103,7 @@ async def yaml(message: types.Message):
 
 
 @dp.message_handler(commands=["join_draw"])
-async def lottery(message: types.Message):
+async def join_draw(message: types.Message):
     async def check_user_in_channel(user_id_to_check):
         chat_member = await bot.get_chat_member('@furrystickercn', user_id_to_check)
         if chat_member.status == types.ChatMemberStatus.MEMBER or chat_member.status == types.ChatMemberStatus.ADMINISTRATOR:
@@ -158,7 +159,7 @@ async def open_raffle(message: types.Message):
 
 
 @dp.message_handler()
-async def handel(message: types.Message):
+async def handle_gpt(message: types.Message):
     if (
             message.chat.type == "private"
             and message.text[0] != "/"
