@@ -51,7 +51,7 @@ async def chat(msg: str, usr_id: str) -> dict:
     if usr_id in data_set:
         for i in data_set[usr_id]:
             token += round(len(i["content"]) * 2)
-        if token > 5000:
+        if token > 2000:
             return {"msg": "Token数量过多，尝试使用 /forgetme", "error": False}
     if tg_id in usage_limit and usage_limit[tg_id] > 32 and tg_username != config['admin']:
         return {"msg": "您的每日使用次数已用尽（32次）", "error": False}
