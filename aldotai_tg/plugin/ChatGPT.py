@@ -2,6 +2,7 @@ import locale
 import time
 from random import choice
 
+import aiogram.utils.exceptions
 import openai
 import schedule
 from loguru import logger
@@ -64,7 +65,5 @@ async def chat(msg: str, usr_id: str) -> dict:
             usage_limit[tg_id] = 0
         usage_limit[tg_id] += 1
         return {"msg": choice(response["choices"])["message"]["content"], "error": False}
-    except openai.error.OpenAIError as e:
-        return {"msg": str(e), "error": True}
     except Exception as e:
         return {"msg": str(e), "error": True}
