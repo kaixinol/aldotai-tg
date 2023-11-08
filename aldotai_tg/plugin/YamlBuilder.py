@@ -6,14 +6,14 @@ from gameyamlspiderandgenerator import produce_yaml, verify
 from gameyamlspiderandgenerator.util.config import config
 from gameyamlspiderandgenerator.util.plugin_manager import pkg
 from gameyamlspiderandgenerator.util.spider import get_bytes
-from setting import config as bot_config
+from aldotai_tg.setting import config as bot_config
 
 sem = asyncio.Semaphore(3)
 config.load(bot_config['plugin']['YamlBuilder'])
-pkg.__init__()
+pkg.init()
 
 
-async def to_yaml(id_: int, url: str) -> Exception | dict:
+async def to_yaml(url: str) -> dict:
     async with(sem):
         if verify(url) is None:
             raise Exception("URL无效")
