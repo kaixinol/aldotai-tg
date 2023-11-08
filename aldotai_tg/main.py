@@ -77,7 +77,7 @@ async def yaml(message: types.Message):
         try:
             logger.info(f"<{message.from_user.username}>:{message.text[6:]}")
             await message.reply_document(
-                **await to_yaml(message.from_user.id, message.text[6:])
+                **await to_yaml(message.text[6:])
             )
         except Exception as e:
             logger.error(str(e))
